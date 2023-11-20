@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jay Saunik</title>
+    <link rel="shortcut icon" href="assets/profile.png" type="image/x-icon">
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <meta property="og:url" content="https://jay-saunik.web.app" />
+    <meta property="og:title" content="Jay Saunik's Website" />
+    <meta property="og:description" content="Check out my personal portfolio website!" />
+    <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/jay-saunik.appspot.com/o/profile.jpg?alt=media&token=da95ce8f-0de4-4a81-9e92-29cdc7021961" />
+</head>
+<body>
+    <nav class="navbar-primary" id="navbar">
+        <div class="brand-name">Inbox</div>
+    </nav><br><br><br><br>
+
+    <div class="container" id="container"></div>
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getDatabase, ref, get, set, child, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMgWbh_hzBCEZamIw6D1OmroGLl3LmccU",
+            authDomain: "jay-saunik.firebaseapp.com",
+            databaseURL: "https://jay-saunik-default-rtdb.firebaseio.com",
+            projectId: "jay-saunik",
+            storageBucket: "jay-saunik.appspot.com",
+            messagingSenderId: "453469832436",
+            appId: "1:453469832436:web:43746f37c4eaedfb148aa1",
+            measurementId: "G-GZ9W7XZE4F"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase();
+
+        var message = window.location.search;
+        message = message.replace("?", "");
+        
+        if (message === "") {
+            get(child(ref(database), "/")).then((snapshot) => {
+                if (snapshot.exists()) {
+                    var data = snapshot.val();
+                    delete data.id;
+                    for (let key in data) {
+                        let value;
+                        value = data[key];
+                        var tag = document.createElement('a');
+                        var div = document.createElement('div');
+                        div.setAttribute('id', 'msg');
+                        tag.setAttribute('href', 'inbox.html?'+key);
+                        tag.appendChild(div);
+                        div.textContent = value['message'];
+                        document.getElementById('container').appendChild(tag);
+                        document.getElementById('container').appendChild(document.createElement('br'));
+                    } 
+                }
+            })
+        } else {
+            get(child(ref(database), message)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    var data = snapshot.val().message;
+                    var div = document.createElement('div');
+                    div.setAttribute('id', 'msg');
+                    div.textContent = data;
+                    document.getElementById('container').appendChild(div);
+                }
+            })
+        }
+    </script>
+</body>
+</html>
